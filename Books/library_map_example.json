@@ -1,0 +1,275 @@
+{
+  "floors": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Первый этаж",
+      "walls": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440001",
+          "title": "Внешняя стена север",
+          "position": { "x": 0.0, "y": 0.0 },
+          "size": { "width": 1.0, "height": 0.05 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440002",
+          "title": "Внешняя стена восток",
+          "position": { "x": 0.95, "y": 0.0 },
+          "size": { "width": 0.05, "height": 1.0 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440003",
+          "title": "Внешняя стена юг",
+          "position": { "x": 0.0, "y": 0.95 },
+          "size": { "width": 1.0, "height": 0.05 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440004",
+          "title": "Внешняя стена запад",
+          "position": { "x": 0.0, "y": 0.0 },
+          "size": { "width": 0.05, "height": 1.0 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440005",
+          "title": "Внутренняя стена 1",
+          "position": { "x": 0.3, "y": 0.2 },
+          "size": { "width": 0.02, "height": 0.3 },
+          "color": { "red": 0.6, "green": 0.6, "blue": 0.6, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440006",
+          "title": "Внутренняя стена 2",
+          "position": { "x": 0.5, "y": 0.4 },
+          "size": { "width": 0.3, "height": 0.02 },
+          "color": { "red": 0.6, "green": 0.6, "blue": 0.6, "alpha": 1.0 },
+          "rotation": 0.0
+        }
+      ],
+      "doors": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440010",
+          "title": "Главный вход",
+          "position": { "x": 0.45, "y": 0.0 },
+          "size": { "width": 0.1, "height": 0.05 },
+          "color": { "red": 0.8, "green": 0.6, "blue": 0.4, "alpha": 1.0 },
+          "type": "double",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440011",
+          "title": "Дверь в читальный зал",
+          "position": { "x": 0.3, "y": 0.35 },
+          "size": { "width": 0.02, "height": 0.08 },
+          "color": { "red": 0.7, "green": 0.5, "blue": 0.3, "alpha": 1.0 },
+          "type": "single",
+          "rotation": 90.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440012",
+          "title": "Дверь в хранилище",
+          "position": { "x": 0.65, "y": 0.4 },
+          "size": { "width": 0.08, "height": 0.02 },
+          "color": { "red": 0.7, "green": 0.5, "blue": 0.3, "alpha": 1.0 },
+          "type": "single",
+          "rotation": 0.0
+        }
+      ],
+      "furniture": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440020",
+          "title": "Стеллаж с книгами 1",
+          "position": { "x": 0.1, "y": 0.1 },
+          "size": { "width": 0.15, "height": 0.3 },
+          "color": { "red": 0.6, "green": 0.4, "blue": 0.2, "alpha": 1.0 },
+          "type": "shelf",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440021",
+          "title": "Стеллаж с книгами 2",
+          "position": { "x": 0.1, "y": 0.5 },
+          "size": { "width": 0.15, "height": 0.3 },
+          "color": { "red": 0.6, "green": 0.4, "blue": 0.2, "alpha": 1.0 },
+          "type": "shelf",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440022",
+          "title": "Читательский стол 1",
+          "position": { "x": 0.35, "y": 0.15 },
+          "size": { "width": 0.12, "height": 0.08 },
+          "color": { "red": 0.8, "green": 0.7, "blue": 0.6, "alpha": 1.0 },
+          "type": "table",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440023",
+          "title": "Читательский стол 2",
+          "position": { "x": 0.5, "y": 0.15 },
+          "size": { "width": 0.12, "height": 0.08 },
+          "color": { "red": 0.8, "green": 0.7, "blue": 0.6, "alpha": 1.0 },
+          "type": "table",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440024",
+          "title": "Стул 1",
+          "position": { "x": 0.37, "y": 0.25 },
+          "size": { "width": 0.04, "height": 0.04 },
+          "color": { "red": 0.5, "green": 0.3, "blue": 0.1, "alpha": 1.0 },
+          "type": "chair",
+          "rotation": 45.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440025",
+          "title": "Стул 2",
+          "position": { "x": 0.52, "y": 0.25 },
+          "size": { "width": 0.04, "height": 0.04 },
+          "color": { "red": 0.5, "green": 0.3, "blue": 0.1, "alpha": 1.0 },
+          "type": "chair",
+          "rotation": 45.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440026",
+          "title": "Шкаф для картотеки",
+          "position": { "x": 0.7, "y": 0.6 },
+          "size": { "width": 0.2, "height": 0.15 },
+          "color": { "red": 0.4, "green": 0.3, "blue": 0.2, "alpha": 1.0 },
+          "type": "cabinet",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440027",
+          "title": "Диван для отдыха",
+          "position": { "x": 0.75, "y": 0.2 },
+          "size": { "width": 0.15, "height": 0.1 },
+          "color": { "red": 0.7, "green": 0.5, "blue": 0.3, "alpha": 1.0 },
+          "type": "sofa",
+          "rotation": 90.0
+        }
+      ]
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440100",
+      "title": "Второй этаж",
+      "walls": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440101",
+          "title": "Внешняя стена север",
+          "position": { "x": 0.0, "y": 0.0 },
+          "size": { "width": 1.0, "height": 0.05 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440102",
+          "title": "Внешняя стена восток",
+          "position": { "x": 0.95, "y": 0.0 },
+          "size": { "width": 0.05, "height": 1.0 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440103",
+          "title": "Внешняя стена юг",
+          "position": { "x": 0.0, "y": 0.95 },
+          "size": { "width": 1.0, "height": 0.05 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440104",
+          "title": "Внешняя стена запад",
+          "position": { "x": 0.0, "y": 0.0 },
+          "size": { "width": 0.05, "height": 1.0 },
+          "color": { "red": 0.5, "green": 0.5, "blue": 0.5, "alpha": 1.0 },
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440105",
+          "title": "Внутренняя стена 1",
+          "position": { "x": 0.4, "y": 0.3 },
+          "size": { "width": 0.02, "height": 0.4 },
+          "color": { "red": 0.6, "green": 0.6, "blue": 0.6, "alpha": 1.0 },
+          "rotation": 0.0
+        }
+      ],
+      "doors": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440110",
+          "title": "Вход на второй этаж",
+          "position": { "x": 0.48, "y": 0.0 },
+          "size": { "width": 0.04, "height": 0.05 },
+          "color": { "red": 0.8, "green": 0.6, "blue": 0.4, "alpha": 1.0 },
+          "type": "single",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440111",
+          "title": "Дверь в архив",
+          "position": { "x": 0.4, "y": 0.5 },
+          "size": { "width": 0.02, "height": 0.08 },
+          "color": { "red": 0.7, "green": 0.5, "blue": 0.3, "alpha": 1.0 },
+          "type": "single",
+          "rotation": 90.0
+        }
+      ],
+      "furniture": [
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440120",
+          "title": "Архивный стеллаж 1",
+          "position": { "x": 0.1, "y": 0.1 },
+          "size": { "width": 0.25, "height": 0.4 },
+          "color": { "red": 0.5, "green": 0.35, "blue": 0.15, "alpha": 1.0 },
+          "type": "shelf",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440121",
+          "title": "Архивный стеллаж 2",
+          "position": { "x": 0.1, "y": 0.55 },
+          "size": { "width": 0.25, "height": 0.4 },
+          "color": { "red": 0.5, "green": 0.35, "blue": 0.15, "alpha": 1.0 },
+          "type": "shelf",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440122",
+          "title": "Рабочий стол",
+          "position": { "x": 0.45, "y": 0.1 },
+          "size": { "width": 0.15, "height": 0.1 },
+          "color": { "red": 0.7, "green": 0.6, "blue": 0.5, "alpha": 1.0 },
+          "type": "desk",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440123",
+          "title": "Офисный стул",
+          "position": { "x": 0.52, "y": 0.22 },
+          "size": { "width": 0.04, "height": 0.04 },
+          "color": { "red": 0.3, "green": 0.3, "blue": 0.3, "alpha": 1.0 },
+          "type": "chair",
+          "rotation": 0.0
+        },
+        {
+          "id": "550e8400-e29b-41d4-a716-446655440124",
+          "title": "Шкаф для документов",
+          "position": { "x": 0.65, "y": 0.2 },
+          "size": { "width": 0.25, "height": 0.2 },
+          "color": { "red": 0.35, "green": 0.25, "blue": 0.15, "alpha": 1.0 },
+          "type": "cabinet",
+          "rotation": 0.0
+        }
+      ]
+    }
+  ]
+}
+
