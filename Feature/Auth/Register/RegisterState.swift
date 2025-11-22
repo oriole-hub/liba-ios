@@ -7,7 +7,7 @@
 
 import Foundation
 import Dependencies
-import CasePaths
+import SwiftNavigation
 
 final class RegisterState: ObservableObject {
     

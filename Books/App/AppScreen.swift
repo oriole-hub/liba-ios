@@ -30,8 +30,6 @@ struct AppScreen: View {
                             Label("Карта", systemImage: state.tabSelection == .libraryMap ? "map.fill" : "map")
                         }
                 }
-                //        case .none:
-                //            EmptyView()
             }
         }
         .onAppear {

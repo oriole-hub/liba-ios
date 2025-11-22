@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SwiftNavigation
+import SwiftUINavigation
 
 struct RegisterScreen: View {
     

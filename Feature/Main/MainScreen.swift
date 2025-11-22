@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftUINavigation
 
 struct MainScreen: View {
     
@@ -30,11 +31,20 @@ struct MainScreen: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    ReaderTicketView(bottomRightText: "ФАМИЛИЯ И.О.")
+                    Button(action: {
+                        state.destination = .libraryCard(LibraryCardState())
+                    }) {
+                        ReaderTicketView(bottomRightText: "ФАМИЛИЯ И.О.")
+                    }
+                    .buttonStyle(PlainButtonStyle())
                     LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(Array(sampleBooks.enumerated()), id: \.offset) { index, book in
                             Button(action: {
-                                // Действие при нажатии на книгу
+                                state.destination = .book(BookState(
+                                    bookName: book.name,
+                                    imageURLs: book.imageURL != nil ? [book.imageURL] : [],
+                                    description: "Это описание книги \"\(book.name)\". Здесь будет размещена подробная информация о книге, её содержании и особенностях."
+                                ))
                             }) {
                                 BookGridCell(imageURL: book.imageURL, bookName: book.name)
                             }
@@ -52,6 +62,12 @@ struct MainScreen: View {
                         Image(systemName: "person.fill")
                     }
                 }
+            }
+            .navigationDestination(item: $state.destination.book) { bookState in
+                bookState.screen
+            }
+            .navigationDestination(item: $state.destination.libraryCard) { libraryCardState in
+                libraryCardState.screen
             }
         }
     }

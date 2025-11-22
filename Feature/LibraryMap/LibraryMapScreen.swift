@@ -24,6 +24,8 @@ struct LibraryMapScreen: View {
                     .pickerStyle(.segmented)
                     .padding()
                     
+                    Spacer()
+                    
                     // Карта этажа
                     if let floor = state.currentFloor {
                         GeometryReader { geometry in
@@ -50,6 +52,7 @@ struct LibraryMapScreen: View {
                         .aspectRatio(1.0, contentMode: .fit)
                         .padding()
                     }
+                    Spacer()
                 } else {
                     VStack {
                         Text("Карта не загружена")
