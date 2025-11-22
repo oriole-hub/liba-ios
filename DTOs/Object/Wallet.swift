@@ -25,7 +25,7 @@ public extension Wallet.Parameters {
         public let memberNumber: String
         public let barcodeLabel: String?
         public let barcodeValue: String?
-        public let expiresAt: Date?
+        public let expiresAt: String?
     }
     
     @MemberwiseInit(.public, _optionalsDefaultNil: true)

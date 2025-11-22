@@ -9,6 +9,7 @@ import Foundation
 import Dependencies
 import SwiftNavigation
 import PassKit
+import KeychainAccess
 
 final class MainState: ObservableObject {
     
@@ -16,6 +17,7 @@ final class MainState: ObservableObject {
     
     @Dependency(\.bookService) private var bookService
     @Dependency(\.userService) private var userService
+    @Dependency(\.walletService) private var walletService
     
     @Published var searchText: String = "" {
         didSet {
@@ -165,32 +167,71 @@ final class MainState: ObservableObject {
     
     @MainActor
     func loadWalletPass() async {
-        // Примечание: Для полноценной работы нужно загрузить .pkpass файл с сервера
-        // Создание PKPass требует сертификата и приватного ключа, которые обычно хранятся на сервере
+        // Получаем данные пользователя для создания membership
+        let memberName = userFullName.isEmpty ? (UserDefaults.group.userFullName ?? "ПОЛЬЗОВАТЕЛЬ") : userFullName
+        let memberNumber = UserDefaults.group.userBarcode ?? ""
+        let barcodeValue = memberNumber
         
-        // Здесь можно добавить загрузку .pkpass файла с сервера:
-        // 1. Создать API endpoint для получения .pkpass файла
-        // 2. Загрузить файл
-        // 3. Создать PKPass из загруженных данных
+        // Сначала пытаемся получить существующий membership
+        var membership: Wallet.Responses.WalletMembershipResponse?
         
-        // Временная реализация: устанавливаем nil
-        // В реальном приложении это должно быть заменено на загрузку с сервера
+        do {
+            membership = try await walletService.getMyMembership()
+        } catch {
+            // Если membership не существует, создаем новый
+            print("Membership not found, creating new one: \(error.localizedDescription)")
+            
+            do {
+                let createParameters = Wallet.Parameters.WalletMembershipCreate(
+                    memberName: memberName,
+                    memberNumber: memberNumber,
+                    barcodeLabel: barcodeValue.isEmpty ? nil : barcodeValue,
+                    barcodeValue: barcodeValue.isEmpty ? nil : barcodeValue,
+                    expiresAt: "2026-12-22T17:49:09Z"
+                )
+                membership = try await walletService.createMembership(parameters: createParameters)
+                print("Membership created successfully")
+            } catch {
+                print("Failed to create membership: \(error.localizedDescription)")
+                walletPass = nil
+                return
+            }
+        }
         
-        // Пример загрузки с сервера:
-        // guard let barcode = UserDefaults.group.userBarcode,
-        //       let url = URL(string: "https://your-server.com/api/pass/\(barcode)") else {
-        //     walletPass = nil
-        //     return
-        // }
-        // 
-        // do {
-        //     let (data, _) = try await URLSession.shared.data(from: url)
-        //     walletPass = try PKPass(data: data)
-        // } catch {
-        //     print("Failed to load wallet pass: \(error.localizedDescription)")
-        //     walletPass = nil
-        // }
+        // Проверяем наличие URL для загрузки PKPass
+        guard let membership = membership,
+              let passUrlString = membership.passHrefApple,
+              let passUrl = URL(string: passUrlString) else {
+            walletPass = nil
+            return
+        }
         
-        walletPass = nil
+        // Загружаем .pkpass файл с сервера
+        do {
+            var request = URLRequest(url: passUrl)
+            
+            // Добавляем авторизацию, если есть токен
+            if let token = Keychain.app.accessToken {
+                request.setValue("Bearer \(token.value)", forHTTPHeaderField: "Authorization")
+            }
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            print("DATA", data)
+            print("RESPONSE", response)
+            
+            // Проверяем успешность ответа
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                print("Failed to load wallet pass: Invalid response")
+                walletPass = nil
+                return
+            }
+            
+            // Создаем PKPass из загруженных данных
+            walletPass = try PKPass(data: data)
+        } catch {
+            print("Failed to load wallet pass: \(error.localizedDescription)")
+            walletPass = nil
+        }
     }
 }
