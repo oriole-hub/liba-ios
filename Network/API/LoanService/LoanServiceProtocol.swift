@@ -22,3 +22,4 @@ public protocol LoanServiceProtocol {
     func getAllLoans() async throws -> [Loan.Responses.LoanDetailResponse]
 }
 
+
