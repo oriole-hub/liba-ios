@@ -12,7 +12,7 @@ public extension TargetType {
     
     var serverURL: URL {
         let connProtocol = "https://"
-        let servURL = "reticently-pet-walrus.cloudpub.ru"
+        let servURL = "ekb.devoriole.ru"
         let apiURL = "/api"
         return URL(string: connProtocol + servURL + apiURL)!
     }
