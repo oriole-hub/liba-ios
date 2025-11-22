@@ -10,9 +10,18 @@ import SwiftUINavigation
 import AVFoundation
 import PassKit
 
+// PreferenceKey для отслеживания позиций секций
+struct SectionOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: [String: CGFloat] = [:]
+    static func reduce(value: inout [String: CGFloat], nextValue: () -> [String: CGFloat]) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
 struct MainScreen: View {
     
     @StateObject var state: MainState
+    @State private var stickyHeader: String? = nil
     
     private let columns = [
         GridItem(.flexible(), spacing: 8),
@@ -31,7 +40,7 @@ struct MainScreen: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            ZStack(alignment: .top) {
                 if state.isLoading && state.books.isEmpty {
                     ProgressView()
                 } else {
@@ -51,9 +60,18 @@ struct MainScreen: View {
                                     state.isCardFlipped.toggle()
                                 }
                             }
-                            Text("Рекомендации")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(.primary)
+                            
+                            // Заголовок "Рекомендации" с отслеживанием позиции
+                            SectionHeaderView(title: "Рекомендации", id: "recommendations")
+                                .background(
+                                    GeometryReader { geometry in
+                                        Color.clear.preference(
+                                            key: SectionOffsetPreferenceKey.self,
+                                            value: ["recommendations": geometry.frame(in: .named("scroll")).minY]
+                                        )
+                                    }
+                                )
+                            
                             ScrollView(.horizontal) {
                                 LazyHStack(alignment: .center, spacing: 16) {
                                     ForEach(1..<5, id: \.self) { value in
@@ -61,9 +79,18 @@ struct MainScreen: View {
                                     }
                                 }
                             }
-                            Text("Каталог")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(.primary)
+                            
+                            // Заголовок "Каталог" с отслеживанием позиции
+                            SectionHeaderView(title: "Каталог", id: "catalog")
+                                .background(
+                                    GeometryReader { geometry in
+                                        Color.clear.preference(
+                                            key: SectionOffsetPreferenceKey.self,
+                                            value: ["catalog": geometry.frame(in: .named("scroll")).minY]
+                                        )
+                                    }
+                                )
+                            
                             LazyVGrid(columns: columns, spacing: 8) {
                                 ForEach(Array(state.books.enumerated()), id: \.element.id) { index, book in
                                     Button(action: {
@@ -101,9 +128,14 @@ struct MainScreen: View {
                         .padding(.horizontal, 16)
                         .padding(.bottom, 16)
                     }
+                    .coordinateSpace(name: "scroll")
+                    .onPreferenceChange(SectionOffsetPreferenceKey.self) { offsets in
+                        updateStickyHeader(offsets: offsets)
+                    }
                     .refreshable {
                         await state.loadBooks()
                     }
+                    
                 }
             }
             .navigationTitle("Главная")
@@ -122,6 +154,19 @@ struct MainScreen: View {
                     }) {
                         Image(systemName: "person.fill")
                     }
+                }
+            }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if let stickyHeader = stickyHeader {
+                    VStack(spacing: 0) {
+                        SectionHeaderView(title: stickyHeader == "recommendations" ? "Рекомендации" : "Каталог", id: stickyHeader + "_sticky")
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color(UIColor.systemBackground))
+                        Divider()
+                    }
+                    .transition(.opacity)
+                    .animation(.easeInOut, value: stickyHeader)
                 }
             }
             .fullScreenCover(isPresented: $state.showBarcodeScanner) {
@@ -168,5 +213,45 @@ struct MainScreen: View {
                 }
             }
         }
+    }
+    
+    private func updateStickyHeader(offsets: [String: CGFloat]) {
+        guard let recommendationsOffset = offsets["recommendations"],
+              let catalogOffset = offsets["catalog"] else {
+            stickyHeader = nil
+            return
+        }
+        
+        // Пороговое значение для определения, когда заголовок должен стать sticky
+        // Когда заголовок прокручивается выше видимой области (minY становится отрицательным),
+        // он должен стать sticky. Используем небольшой порог для более плавного переключения
+        let threshold: CGFloat = 0
+        
+        // Определяем, какой заголовок должен быть закреплен
+        // Приоритет отдаем тому заголовку, который прокручен выше и находится ближе к текущей позиции
+        if catalogOffset < threshold {
+            // "Каталог" прокручен выше порога - показываем его
+            stickyHeader = "catalog"
+        } else if recommendationsOffset < threshold {
+            // "Рекомендации" прокручен выше порога, но "Каталог" еще нет - показываем "Рекомендации"
+            stickyHeader = "recommendations"
+        } else {
+            // Ни один заголовок еще не достиг порога
+            stickyHeader = nil
+        }
+    }
+}
+
+// Компонент для заголовка секции
+struct SectionHeaderView: View {
+    let title: String
+    let id: String
+    
+    var body: some View {
+        Text(title)
+            .font(.system(size: 24, weight: .bold))
+            .foregroundColor(.primary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 4)
     }
 }
