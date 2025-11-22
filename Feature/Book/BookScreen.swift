@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftUINavigation
 
 struct BookScreen: View {
     
@@ -129,7 +130,7 @@ struct BookScreen: View {
             
             // Button overlayed on screen
             Button(action: {
-                // Action for "взять на прочтение"
+                state.destination = .loanCreation(LoanCreationState(isbn: state.isbn))
             }) {
                 Text("взять на прочтение")
                     .font(.system(size: 17, weight: .semibold))
@@ -145,6 +146,9 @@ struct BookScreen: View {
         }
         .navigationTitle(state.bookName)
         .navigationBarTitleDisplayMode(.large)
+        .navigationDestination(item: $state.destination.loanCreation) { loanCreationState in
+            loanCreationState.screen
+        }
     }
 }
 

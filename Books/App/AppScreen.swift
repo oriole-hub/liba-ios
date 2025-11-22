@@ -29,6 +29,11 @@ struct AppScreen: View {
                         .tabItem {
                             Label("Карта", systemImage: state.tabSelection == .libraryMap ? "map.fill" : "map")
                         }
+                    state.loansState.screen
+                        .tag(AppState.TabSelection.loans)
+                        .tabItem {
+                            Label("Мои книги", systemImage: state.tabSelection == .loans ? "book.fill" : "book")
+                        }
                 }
             }
         }

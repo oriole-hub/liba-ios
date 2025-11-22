@@ -53,11 +53,41 @@ public extension JSONDecoder {
     func withRoundedDate(_ precision: Date.RoundingPrecision) -> Void {
         dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
-            let dateString = try container.decode(String.self)
+            var dateString = try container.decode(String.self)
             
             // Попробуем сначала парсить с timezone (стандартный ISO8601)
             if let date = DateFormatter.iso8601.date(from: dateString) {
                 return date.rounded(precision)
+            }
+            
+            // Если строка заканчивается на 'Z', заменяем на +0000 для ISO8601DateFormatter
+            if dateString.hasSuffix("Z") {
+                let withoutZ = String(dateString.dropLast())
+                if let date = DateFormatter.iso8601.date(from: withoutZ + "+0000") {
+                    return date.rounded(precision)
+                }
+            }
+            
+            // Пробуем разные форматы с 'Z' в конце и разным количеством дробных секунд
+            let formatsWithZ = [
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",  // 6 цифр (микросекунды) с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'",   // 5 цифр с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'",    // 4 цифры с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",     // 3 цифры (миллисекунды) с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SS'Z'",      // 2 цифры с Z
+                "yyyy-MM-dd'T'HH:mm:ss.S'Z'",       // 1 цифра с Z
+                "yyyy-MM-dd'T'HH:mm:ss'Z'"          // без дробных секунд с Z
+            ]
+            
+            for format in formatsWithZ {
+                let formatter = DateFormatter()
+                formatter.dateFormat = format
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                formatter.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+                
+                if let date = formatter.date(from: dateString) {
+                    return date.rounded(precision)
+                }
             }
             
             // Пробуем разные форматы без timezone с разным количеством дробных секунд

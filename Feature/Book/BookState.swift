@@ -7,6 +7,7 @@
 
 import Foundation
 import Dependencies
+import SwiftNavigation
 
 final class BookState: ObservableObject, Identifiable {
     
@@ -22,6 +23,15 @@ final class BookState: ObservableObject, Identifiable {
     @Dependency(\.bookService) private var bookService
     
     lazy var screen = BookScreen(state: self)
+    
+    // MARK: Navigation
+    
+    @CasePathable
+    enum Destination {
+        case loanCreation(LoanCreationState)
+    }
+    
+    @Published var destination: Destination?
     
     init(bookName: String, imageURLs: [String?] = [], description: String = "", genre: String? = nil, isbn: String = "", availableInstancesCount: Int = 0) {
         self.bookName = bookName

@@ -27,9 +27,14 @@ struct MainScreen: View {
                     ScrollView {
                         VStack(spacing: 16) {
                             Button(action: {
-                                state.destination = .libraryCard(LibraryCardState())
+                                let barcode = UserDefaults.group.userBarcode ?? ""
+                                let fullName = UserDefaults.group.userFullName ?? ""
+                                state.destination = .libraryCard(LibraryCardState(
+                                    qrCode: barcode,
+                                    holderName: fullName
+                                ))
                             }) {
-                                ReaderTicketView(bottomRightText: "ФАМИЛИЯ И.О.")
+                                ReaderTicketView(bottomRightText: state.userFullName)
                             }
                             .buttonStyle(PlainButtonStyle())
                             
@@ -111,8 +116,11 @@ struct MainScreen: View {
                 profileState.screen
             }
             .onAppear {
-                if state.books.isEmpty {
-                    Task {
+                Task {
+                    // Загружаем данные пользователя
+                    await state.loadUserData()
+                    // Загружаем книги, если список пуст
+                    if state.books.isEmpty {
                         await state.loadBooks()
                     }
                 }

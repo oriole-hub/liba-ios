@@ -14,6 +14,16 @@ import UIKit
 
 public extension UserDefaults {
     static let group = UserDefaults(suiteName: "group.com.oriole-books")!
+    
+    var userBarcode: String? {
+        get { string(forKey: "user_barcode") }
+        set { set(newValue, forKey: "user_barcode") }
+    }
+    
+    var userFullName: String? {
+        get { string(forKey: "user_full_name") }
+        set { set(newValue, forKey: "user_full_name") }
+    }
 }
 
 // MARK: - Keychain

@@ -14,12 +14,14 @@ final class MainState: ObservableObject {
     // MARK: Properties
     
     @Dependency(\.bookService) private var bookService
+    @Dependency(\.userService) private var userService
     
     @Published var searchText: String = ""
     @Published var books: [Book.Responses.BookDetailResponse] = []
     @Published var isLoading: Bool = false
     @Published var isLoadingMore: Bool = false
     @Published var errorMessage: String?
+    @Published var userFullName: String = "ФАМИЛИЯ И.О."
     
     private var currentSkip: Int = 0
     private let limit: Int = 20
@@ -41,7 +43,12 @@ final class MainState: ObservableObject {
     
     // MARK: Init
     
-    init() {}
+    init() {
+        // Загружаем сохраненное имя при инициализации
+        if let savedName = UserDefaults.group.userFullName {
+            userFullName = savedName.uppercased()
+        }
+    }
     
     // MARK: Actions
     
@@ -81,5 +88,23 @@ final class MainState: ObservableObject {
         }
         
         isLoadingMore = false
+    }
+    
+    @MainActor
+    func loadUserData() async {
+        do {
+            let userResponse = try await userService.getMe()
+            UserDefaults.group.userBarcode = userResponse.barcode
+            UserDefaults.group.userFullName = userResponse.fullName
+            userFullName = userResponse.fullName.uppercased()
+        } catch {
+            // Не показываем ошибку пользователю, если не удалось загрузить данные
+            // Можно логировать ошибку, если нужно
+            print("Failed to load user data: \(error.localizedDescription)")
+            // Используем сохраненное имя, если загрузка не удалась
+            if let savedName = UserDefaults.group.userFullName {
+                userFullName = savedName.uppercased()
+            }
+        }
     }
 }

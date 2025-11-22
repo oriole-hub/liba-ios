@@ -44,7 +44,6 @@ public extension Loan.Responses {
         public let updatedAt: Date
     }
     
-    @MemberwiseInit(.public, _optionalsDefaultNil: true)
     struct LoanDetailResponse: Codable {
         public let id: UUID
         public let userId: UUID

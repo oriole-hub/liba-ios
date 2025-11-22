@@ -23,6 +23,7 @@ struct LoginScreen: View {
                         placeholder: "Введите email"
                     )
                 )
+                .textInputAutocapitalization(.never)
                 
                 // Password field
                 PWFormTextField(
@@ -32,6 +33,7 @@ struct LoginScreen: View {
                         placeholder: "Введите пароль"
                     )
                 )
+                .textInputAutocapitalization(.never)
                 
                 // Error message
                 if let errorMessage = state.errorMessage {

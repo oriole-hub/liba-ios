@@ -20,12 +20,14 @@ final class AppState: ObservableObject {
     lazy var screen = AppScreen(state: self)
     lazy var mainState = MainState()
     lazy var libraryMapState = LibraryMapState()
+    lazy var loansState = LoansState()
     
     private var cancellables = Set<AnyCancellable>()
     
     enum TabSelection: String {
         case main
         case libraryMap
+        case loans
     }
     
     @Published var tabSelection: TabSelection = .main
