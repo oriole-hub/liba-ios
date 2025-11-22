@@ -33,7 +33,7 @@ public struct FlipCardView: View {
     // MARK: Body
     
     public var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             // Лицевая сторона
             frontView
                 .opacity(isFlipped ? 0 : 1)
@@ -66,7 +66,11 @@ public struct FlipCardView: View {
             FlipCardView(isFlipped: $isFlipped) {
                 ReaderTicketView(bottomRightText: "ИВАНОВ И.И.")
             } back: {
-                ReversedReaderTicketView(holderName: "ИВАНОВ И.И.", qrCode: "1234567890")
+                ReversedReaderTicketView(
+                    holderName: "ИВАНОВ И.И.",
+                    qrCode: "1234567890",
+                    pass: nil
+                )
             }
             .padding()
             .onTapGesture {

@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftUINavigation
 import AVFoundation
+import PassKit
 
 struct MainScreen: View {
     
@@ -41,11 +42,14 @@ struct MainScreen: View {
                             } back: {
                                 ReversedReaderTicketView(
                                     holderName: cardHolderName,
-                                    qrCode: cardBarcode
+                                    qrCode: cardBarcode,
+                                    pass: state.walletPass
                                 )
                             }
                             .onTapGesture {
-                                state.isCardFlipped.toggle()
+                                withAnimation(.smooth) {
+                                    state.isCardFlipped.toggle()
+                                }
                             }
                             Text("Рекомендации")
                                 .font(.system(size: 24, weight: .bold))
@@ -128,6 +132,9 @@ struct MainScreen: View {
                         state.showBarcodeScanner = false
                     }
                 )
+            }
+            .sheet(isPresented: $state.showAddToWallet) {
+                AddToWalletView(barcode: cardBarcode, holderName: cardHolderName)
             }
             .navigationDestination(item: $state.destination.book) { bookState in
                 bookState.screen

@@ -8,6 +8,7 @@
 import Foundation
 import Dependencies
 import SwiftNavigation
+import PassKit
 
 final class MainState: ObservableObject {
     
@@ -34,6 +35,7 @@ final class MainState: ObservableObject {
     @Published var errorMessage: String?
     @Published var userFullName: String = "ФАМИЛИЯ И.О."
     @Published var isCardFlipped: Bool = false
+    @Published var walletPass: PKPass?
     
     private var currentSkip: Int = 0
     private let limit: Int = 20
@@ -50,6 +52,7 @@ final class MainState: ObservableObject {
     
     @Published var destination: Destination?
     @Published var showBarcodeScanner: Bool = false
+    @Published var showAddToWallet: Bool = false
  
     lazy var screen = MainScreen(state: self)
     
@@ -146,6 +149,9 @@ final class MainState: ObservableObject {
             UserDefaults.group.userBarcode = userResponse.barcode
             UserDefaults.group.userFullName = userResponse.fullName
             userFullName = userResponse.fullName.uppercased()
+            
+            // Загружаем PKPass для кошелька
+            await loadWalletPass()
         } catch {
             // Не показываем ошибку пользователю, если не удалось загрузить данные
             // Можно логировать ошибку, если нужно
@@ -155,5 +161,36 @@ final class MainState: ObservableObject {
                 userFullName = savedName.uppercased()
             }
         }
+    }
+    
+    @MainActor
+    func loadWalletPass() async {
+        // Примечание: Для полноценной работы нужно загрузить .pkpass файл с сервера
+        // Создание PKPass требует сертификата и приватного ключа, которые обычно хранятся на сервере
+        
+        // Здесь можно добавить загрузку .pkpass файла с сервера:
+        // 1. Создать API endpoint для получения .pkpass файла
+        // 2. Загрузить файл
+        // 3. Создать PKPass из загруженных данных
+        
+        // Временная реализация: устанавливаем nil
+        // В реальном приложении это должно быть заменено на загрузку с сервера
+        
+        // Пример загрузки с сервера:
+        // guard let barcode = UserDefaults.group.userBarcode,
+        //       let url = URL(string: "https://your-server.com/api/pass/\(barcode)") else {
+        //     walletPass = nil
+        //     return
+        // }
+        // 
+        // do {
+        //     let (data, _) = try await URLSession.shared.data(from: url)
+        //     walletPass = try PKPass(data: data)
+        // } catch {
+        //     print("Failed to load wallet pass: \(error.localizedDescription)")
+        //     walletPass = nil
+        // }
+        
+        walletPass = nil
     }
 }
