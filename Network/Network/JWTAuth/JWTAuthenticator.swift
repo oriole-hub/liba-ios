@@ -23,7 +23,9 @@ final class JWTAuthenticator: @unchecked Sendable {
 extension JWTAuthenticator: Authenticator {
     
     func apply(_ credential: JWTCredential, to urlRequest: inout URLRequest) {
-        guard let token = credential.token?.value else { return }
+        // Всегда читаем токен из Keychain динамически, чтобы использовать актуальный токен
+        // даже после выхода и нового входа
+        guard let token = Keychain.app.accessToken?.value else { return }
         urlRequest.headers.add(.authorization(bearerToken: token))
     }
     
@@ -58,7 +60,8 @@ extension JWTAuthenticator: Authenticator {
     }
     
     func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: JWTCredential) -> Bool {
-        guard let token = credential.token else { return true }
+        // Проверяем токен из Keychain, чтобы использовать актуальный токен
+        guard let token = Keychain.app.accessToken else { return true }
         return urlRequest.headers.contains(.authorization(bearerToken: token.value))
     }
 }
