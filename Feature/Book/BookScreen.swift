@@ -123,6 +123,9 @@ struct BookScreen: View {
                     .padding(.bottom, 80) // Space for button
                 }
             }
+            .refreshable {
+                await state.refresh()
+            }
             
             // Button overlayed on screen
             Button(action: {
@@ -133,9 +136,10 @@ struct BookScreen: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(Color.blue)
+                    .background(state.availableInstancesCount > 0 ? Color.blue : Color.gray)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
+            .disabled(state.availableInstancesCount == 0)
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
