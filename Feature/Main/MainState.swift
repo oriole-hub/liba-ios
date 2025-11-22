@@ -33,6 +33,7 @@ final class MainState: ObservableObject {
     @Published var isLoadingMore: Bool = false
     @Published var errorMessage: String?
     @Published var userFullName: String = "ФАМИЛИЯ И.О."
+    @Published var isCardFlipped: Bool = false
     
     private var currentSkip: Int = 0
     private let limit: Int = 20
@@ -44,7 +45,6 @@ final class MainState: ObservableObject {
     @CasePathable
     enum Destination {
         case book(BookState)
-        case libraryCard(LibraryCardState)
         case profile(ProfileState)
     }
     

@@ -18,6 +18,16 @@ struct MainScreen: View {
         GridItem(.flexible(), spacing: 8)
     ]
     
+    private var cardBarcode: String {
+        let barcode = UserDefaults.group.userBarcode ?? ""
+        return barcode.isEmpty ? "0000000000" : barcode
+    }
+    
+    private var cardHolderName: String {
+        let name = state.userFullName
+        return name.isEmpty ? "ИМЯ ДЕРЖАТЕЛЯ" : name
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -26,17 +36,17 @@ struct MainScreen: View {
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
-                            Button(action: {
-                                let barcode = UserDefaults.group.userBarcode ?? ""
-                                let fullName = UserDefaults.group.userFullName ?? ""
-                                state.destination = .libraryCard(LibraryCardState(
-                                    qrCode: barcode,
-                                    holderName: fullName
-                                ))
-                            }) {
+                            FlipCardView(isFlipped: $state.isCardFlipped) {
                                 ReaderTicketView(bottomRightText: state.userFullName)
+                            } back: {
+                                ReversedReaderTicketView(
+                                    holderName: cardHolderName,
+                                    qrCode: cardBarcode
+                                )
                             }
-                            .buttonStyle(PlainButtonStyle())
+                            .onTapGesture {
+                                state.isCardFlipped.toggle()
+                            }
                             Text("Рекомендации")
                                 .font(.system(size: 24, weight: .bold))
                                 .foregroundColor(.primary)
@@ -121,9 +131,6 @@ struct MainScreen: View {
             }
             .navigationDestination(item: $state.destination.book) { bookState in
                 bookState.screen
-            }
-            .navigationDestination(item: $state.destination.libraryCard) { libraryCardState in
-                libraryCardState.screen
             }
             .navigationDestination(item: $state.destination.profile) { profileState in
                 profileState.screen
