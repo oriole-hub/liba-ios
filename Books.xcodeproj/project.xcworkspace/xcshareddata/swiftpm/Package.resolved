@@ -1,5 +1,5 @@
 {
-  "originHash" : "3279dcee48582998ce1184e0b547381fd5ff4f06ae7b83c3b48ef1edebab2e9b",
+  "originHash" : "2a900d9c7be226152efdc0a396a1d2893036be6a6991e833e3bcb28da2db604b",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -8,6 +8,24 @@
       "state" : {
         "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
         "version" : "5.10.2"
+      }
+    },
+    {
+      "identity" : "colorfulx",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lakr233/ColorfulX",
+      "state" : {
+        "revision" : "761719a44175e7279a5c3123ce1c19dbd861bb4e",
+        "version" : "6.0.1"
+      }
+    },
+    {
+      "identity" : "colorvector",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lakr233/ColorVector.git",
+      "state" : {
+        "revision" : "6da8726bf38d68eb943d0f2139ac2a1fac70e65b",
+        "version" : "1.0.4"
       }
     },
     {
@@ -38,6 +56,15 @@
       }
     },
     {
+      "identity" : "msdisplaylink",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lakr233/MSDisplayLink.git",
+      "state" : {
+        "revision" : "ebf5823cb5fc1326639d9a05bc06d16bbe82989f",
+        "version" : "2.0.8"
+      }
+    },
+    {
       "identity" : "opencombine",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OpenCombine/OpenCombine.git",
@@ -62,6 +89,15 @@
       "state" : {
         "revision" : "5004a18539bd68905c5939aa893075f578f4f03d",
         "version" : "6.9.1"
+      }
+    },
+    {
+      "identity" : "springinterpolation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lakr233/SpringInterpolation.git",
+      "state" : {
+        "revision" : "f9ae95ece5d6b7cdceafd4381f1d5f0f9494e5d2",
+        "version" : "1.3.1"
       }
     },
     {

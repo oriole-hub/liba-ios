@@ -10,6 +10,7 @@
 		462E766A2ED0A3320005FC74 /* MemberwiseInit in Frameworks */ = {isa = PBXBuildFile; productRef = 462E76692ED0A3320005FC74 /* MemberwiseInit */; };
 		462E766C2ED0A3320005FC74 /* MemberwiseInitClient in Frameworks */ = {isa = PBXBuildFile; productRef = 462E766B2ED0A3320005FC74 /* MemberwiseInitClient */; };
 		462E77A82ED0F7990005FC74 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 462E77A72ED0F7990005FC74 /* KeychainAccess */; };
+		463983FC2ED2839E003452F7 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 463983FB2ED2839E003452F7 /* ColorfulX */; };
 		46AFF1B42ED04D52001963CD /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 46AFF1B32ED04D52001963CD /* Dependencies */; };
 		46AFF1B62ED04D52001963CD /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = 46AFF1B52ED04D52001963CD /* DependenciesMacros */; };
 		46AFF1B92ED0502B001963CD /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 46AFF1B82ED0502B001963CD /* CombineMoya */; };
@@ -90,6 +91,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				46AFF1B62ED04D52001963CD /* DependenciesMacros in Frameworks */,
+				463983FC2ED2839E003452F7 /* ColorfulX in Frameworks */,
 				462E766A2ED0A3320005FC74 /* MemberwiseInit in Frameworks */,
 				462E77A82ED0F7990005FC74 /* KeychainAccess in Frameworks */,
 				46AFF1B42ED04D52001963CD /* Dependencies in Frameworks */,
@@ -177,6 +179,7 @@
 				462E76692ED0A3320005FC74 /* MemberwiseInit */,
 				462E766B2ED0A3320005FC74 /* MemberwiseInitClient */,
 				462E77A72ED0F7990005FC74 /* KeychainAccess */,
+				463983FB2ED2839E003452F7 /* ColorfulX */,
 			);
 			productName = Books;
 			productReference = 46B7B7432ECB3A0B0021D326 /* Books.app */;
@@ -266,6 +269,7 @@
 				46AFF2022ED05200001963CD /* XCRemoteSwiftPackageReference "swift-navigation" */,
 				462E76682ED0A3320005FC74 /* XCRemoteSwiftPackageReference "swift-memberwise-init-macro" */,
 				462E77A62ED0F7990005FC74 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				463983FA2ED2839E003452F7 /* XCRemoteSwiftPackageReference "ColorfulX" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 46B7B7442ECB3A0B0021D326 /* Products */;
@@ -652,6 +656,14 @@
 				version = 4.2.2;
 			};
 		};
+		463983FA2ED2839E003452F7 /* XCRemoteSwiftPackageReference "ColorfulX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Lakr233/ColorfulX";
+			requirement = {
+				kind = exactVersion;
+				version = 6.0.1;
+			};
+		};
 		46AFF1B22ED04D52001963CD /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
@@ -693,6 +705,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 462E77A62ED0F7990005FC74 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		463983FB2ED2839E003452F7 /* ColorfulX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 463983FA2ED2839E003452F7 /* XCRemoteSwiftPackageReference "ColorfulX" */;
+			productName = ColorfulX;
 		};
 		46AFF1B32ED04D52001963CD /* Dependencies */ = {
 			isa = XCSwiftPackageProductDependency;
