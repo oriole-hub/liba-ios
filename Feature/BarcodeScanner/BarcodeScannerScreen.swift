@@ -61,6 +61,10 @@ struct BarcodeScannerScreen: View {
                 
                 // Если настройка не завершилась, все равно пытаемся запустить
                 if cameraManager.cameraPermissionStatus == .authorized {
+                    // Настраиваем callback для остановки камеры при успешном получении книги
+                    state.onShouldStopCamera = {
+                        cameraManager.stopScanning()
+                    }
                     cameraManager.startScanning { barcode in
                         Task { @MainActor in
                             await state.handleScannedBarcode(barcode)
@@ -210,8 +214,8 @@ extension CameraManager: AVCaptureMetadataOutputObjectsDelegate {
         }
         
         Task { @MainActor in
-            // Останавливаем сканирование после успешного распознавания
-            session.stopRunning()
+            // Не останавливаем камеру здесь - она должна продолжать работать
+            // Камера остановится только после успешного получения книги
             onBarcodeScanned?(stringValue)
         }
     }

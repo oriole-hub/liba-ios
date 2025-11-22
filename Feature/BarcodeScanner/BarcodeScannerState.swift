@@ -43,9 +43,11 @@ final class BarcodeScannerState: ObservableObject {
     // MARK: Init
     
     var onBookFound: ((BookState) -> Void)?
+    var onShouldStopCamera: (() -> Void)?
     
-    init(onBookFound: ((BookState) -> Void)? = nil) {
+    init(onBookFound: ((BookState) -> Void)? = nil, onShouldStopCamera: (() -> Void)? = nil) {
         self.onBookFound = onBookFound
+        self.onShouldStopCamera = onShouldStopCamera
     }
     
     // MARK: Actions
@@ -92,6 +94,9 @@ final class BarcodeScannerState: ObservableObject {
                 availableInstancesCount: availableCount
             )
             
+            // Останавливаем камеру только после успешного получения книги
+            onShouldStopCamera?()
+            
             // Если есть callback, вызываем его (для случая fullScreenCover)
             if let onBookFound = onBookFound {
                 onBookFound(bookState)
@@ -102,6 +107,7 @@ final class BarcodeScannerState: ObservableObject {
             
         } catch {
             // При ошибке ничего не делаем (тихо игнорируем)
+            // Камера продолжит сканирование, так как мы не останавливаем её
             // Можно опционально логировать ошибку для отладки
             print("Ошибка при получении книги по ISBN: \(error.localizedDescription)")
         }
