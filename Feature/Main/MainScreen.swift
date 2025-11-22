@@ -7,20 +7,11 @@
 
 import SwiftUI
 import SwiftUINavigation
+import AVFoundation
 
 struct MainScreen: View {
     
     @StateObject var state: MainState
-    
-    // Примерные данные для демонстрации
-    private let sampleBooks: [(imageURL: String?, name: String)] = [
-        (imageURL: "https://example.com/book1.jpg", name: "Война и мир"),
-        (imageURL: "https://example.com/book2.jpg", name: "Преступление и наказание"),
-        (imageURL: nil, name: "Мастер и Маргарита"),
-        (imageURL: "https://example.com/book4.jpg", name: "Анна Каренина"),
-        (imageURL: "https://example.com/book5.jpg", name: "Братья Карамазовы"),
-        (imageURL: nil, name: "Идиот"),
-    ]
     
     private let columns = [
         GridItem(.flexible(), spacing: 8),
@@ -29,45 +20,117 @@ struct MainScreen: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    Button(action: {
-                        state.destination = .libraryCard(LibraryCardState())
-                    }) {
-                        ReaderTicketView(bottomRightText: "ФАМИЛИЯ И.О.")
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach(Array(sampleBooks.enumerated()), id: \.offset) { index, book in
+            ZStack {
+                if state.isLoading && state.books.isEmpty {
+                    ProgressView()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 16) {
                             Button(action: {
-                                state.destination = .book(BookState(
-                                    bookName: book.name,
-                                    imageURLs: book.imageURL != nil ? [book.imageURL] : [],
-                                    description: "Это описание книги \"\(book.name)\". Здесь будет размещена подробная информация о книге, её содержании и особенностях."
-                                ))
+                                state.destination = .libraryCard(LibraryCardState())
                             }) {
-                                BookGridCell(imageURL: book.imageURL, bookName: book.name)
+                                ReaderTicketView(bottomRightText: "ФАМИЛИЯ И.О.")
                             }
                             .buttonStyle(PlainButtonStyle())
+                            
+                            LazyVGrid(columns: columns, spacing: 8) {
+                                ForEach(Array(state.books.enumerated()), id: \.element.id) { index, book in
+                                    Button(action: {
+                                        // Подсчитываем доступные экземпляры (статус "available")
+                                        let availableCount = book.instances.filter { $0.status.lowercased() == "available" }.count
+                                        
+                                        state.destination = .book(BookState(
+                                            bookName: book.title,
+                                            imageURLs: book.urlPic != nil ? [book.urlPic] : [],
+                                            description: book.description ?? "Описание книги отсутствует.",
+                                            genre: book.genre,
+                                            isbn: book.isbn,
+                                            availableInstancesCount: availableCount
+                                        ))
+                                    }) {
+                                        BookGridCell(imageURL: book.urlPic, bookName: book.title)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .onAppear {
+                                        // Загружаем следующую страницу, когда показываются последние элементы
+                                        if index >= state.books.count - 3 && state.hasMoreBooks && !state.isLoadingMore {
+                                            Task {
+                                                await state.loadMoreBooks()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Индикатор загрузки дополнительных книг
+                            if state.isLoadingMore {
+                                ProgressView()
+                                    .padding()
+                            }
                         }
+                        .padding(16)
+                    }
+                    .refreshable {
+                        await state.loadBooks()
                     }
                 }
-                .padding(16)
             }
             .navigationTitle("Главная")
             .searchable(text: $state.searchText)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        state.showBarcodeScanner = true
+                    }) {
+                        Image(systemName: "barcode.viewfinder")
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {}) {
+                    Button(action: {
+                        state.destination = .profile(ProfileState())
+                    }) {
                         Image(systemName: "person.fill")
                     }
                 }
+            }
+            .fullScreenCover(isPresented: $state.showBarcodeScanner) {
+                BarcodeScannerScreen(
+                    state: BarcodeScannerState { scannedISBN in
+                        state.searchText = scannedISBN
+                        state.showBarcodeScanner = false
+                    }
+                )
             }
             .navigationDestination(item: $state.destination.book) { bookState in
                 bookState.screen
             }
             .navigationDestination(item: $state.destination.libraryCard) { libraryCardState in
                 libraryCardState.screen
+            }
+            .navigationDestination(item: $state.destination.profile) { profileState in
+                profileState.screen
+            }
+            .onAppear {
+                if state.books.isEmpty {
+                    Task {
+                        await state.loadBooks()
+                    }
+                }
+            }
+            .alert(
+                "Ошибка",
+                isPresented: Binding(
+                    get: { state.errorMessage != nil },
+                    set: { if !$0 { state.errorMessage = nil } }
+                )
+            ) {
+                Button("OK") {
+                    state.errorMessage = nil
+                }
+            } message: {
+                if let errorMessage = state.errorMessage {
+                    Text(errorMessage)
+                }
             }
         }
     }

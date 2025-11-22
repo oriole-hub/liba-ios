@@ -55,14 +55,37 @@ public extension JSONDecoder {
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
             
-            guard let date = DateFormatter.iso8601.date(from: dateString) else {
-                throw DecodingError.dataCorruptedError(
-                    in: container,
-                    debugDescription: "Invalid ISO8601 date format with fractional seconds"
-                )
+            // Попробуем сначала парсить с timezone (стандартный ISO8601)
+            if let date = DateFormatter.iso8601.date(from: dateString) {
+                return date.rounded(precision)
             }
             
-            return date.rounded(precision)
+            // Пробуем разные форматы без timezone с разным количеством дробных секунд
+            let formats = [
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",  // 6 цифр (микросекунды)
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSS",   // 5 цифр
+                "yyyy-MM-dd'T'HH:mm:ss.SSSS",    // 4 цифры
+                "yyyy-MM-dd'T'HH:mm:ss.SSS",     // 3 цифры (миллисекунды)
+                "yyyy-MM-dd'T'HH:mm:ss.SS",      // 2 цифры
+                "yyyy-MM-dd'T'HH:mm:ss.S",       // 1 цифра
+                "yyyy-MM-dd'T'HH:mm:ss"          // без дробных секунд
+            ]
+            
+            for format in formats {
+                let formatter = DateFormatter()
+                formatter.dateFormat = format
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                formatter.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+                
+                if let date = formatter.date(from: dateString) {
+                    return date.rounded(precision)
+                }
+            }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid ISO8601 date format: \(dateString)"
+            )
         }
     }
 }

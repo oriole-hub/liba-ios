@@ -47,6 +47,7 @@ public extension Book.Responses {
         public let genre: String?
         public let author: String
         public let isbn: String
+        public let urlPic: String?
         public let createdAt: Date
         public let updatedAt: Date
         public let instanceCount: Int
@@ -60,6 +61,7 @@ public extension Book.Responses {
         public let genre: String?
         public let author: String
         public let isbn: String
+        public let urlPic: String?
         public let createdAt: Date
         public let updatedAt: Date
         public let instances: [BookInstanceResponse]

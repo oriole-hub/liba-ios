@@ -49,6 +49,46 @@ struct BookScreen: View {
                         .padding(.horizontal, 16)
                     }
                     
+                    // Book details section
+                    VStack(alignment: .leading, spacing: 16) {
+                        // Title
+                        Text(state.bookName)
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundColor(.primary)
+                        
+                        // Genre
+                        if let genre = state.genre, !genre.isEmpty {
+                            HStack(spacing: 8) {
+                                Image(systemName: "bookmark.fill")
+                                    .foregroundColor(.blue)
+                                Text("Жанр: \(genre)")
+                                    .font(.system(size: 17, weight: .medium))
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                        
+                        // ISBN
+                        if !state.isbn.isEmpty {
+                            HStack(spacing: 8) {
+                                Image(systemName: "barcode")
+                                    .foregroundColor(.blue)
+                                Text("ISBN: \(state.isbn)")
+                                    .font(.system(size: 17, weight: .medium))
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                        
+                        // Available instances
+                        HStack(spacing: 8) {
+                            Image(systemName: "books.vertical.fill")
+                                .foregroundColor(.green)
+                            Text("Доступно экземпляров: \(state.availableInstancesCount)")
+                                .font(.system(size: 17, weight: .medium))
+                                .foregroundColor(.primary)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
                     // Description section
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Описание")

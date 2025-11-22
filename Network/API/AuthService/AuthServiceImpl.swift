@@ -171,6 +171,7 @@ public final class AuthServiceImpl: AuthServiceProtocol {
     public func logout() async throws {
         Keychain.app.accessToken = nil
         Keychain.app.refreshToken = nil
+        userLoggedInSubject.send(false)
     }
     
     // MARK: Private methods

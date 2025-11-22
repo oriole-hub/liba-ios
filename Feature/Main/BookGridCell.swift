@@ -26,6 +26,7 @@ struct BookGridCell: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
+                        .frame(width: 175, height: 247)
                 case .failure:
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
@@ -37,9 +38,8 @@ struct BookGridCell: View {
                     EmptyView()
                 }
             }
-            .aspectRatio(0.7, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             Text(bookName)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(.primary)
@@ -47,7 +47,7 @@ struct BookGridCell: View {
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .aspectRatio(0.7, contentMode: .fit)
+        .frame(width: 175, height: 247)
     }
 }
 
