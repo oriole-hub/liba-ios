@@ -34,6 +34,11 @@ struct AppScreen: View {
                         .tabItem {
                             Label("Мои книги", systemImage: state.tabSelection == .loans ? "book.fill" : "book")
                         }
+                    state.eventsState.screen
+                        .tag(AppState.TabSelection.events)
+                        .tabItem {
+                            Label("События", systemImage: state.tabSelection == .events ? "calendar.fill" : "calendar")
+                        }
                 }
             }
         }

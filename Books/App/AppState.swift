@@ -21,6 +21,7 @@ final class AppState: ObservableObject {
     lazy var mainState = MainState()
     lazy var libraryMapState = LibraryMapState()
     lazy var loansState = LoansState()
+    lazy var eventsState = EventsState()
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -28,6 +29,7 @@ final class AppState: ObservableObject {
         case main
         case libraryMap
         case loans
+        case events
     }
     
     @Published var tabSelection: TabSelection = .main

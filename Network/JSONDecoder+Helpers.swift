@@ -68,29 +68,7 @@ public extension JSONDecoder {
                 }
             }
             
-            // Пробуем разные форматы с 'Z' в конце и разным количеством дробных секунд
-            let formatsWithZ = [
-                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",  // 6 цифр (микросекунды) с Z
-                "yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'",   // 5 цифр с Z
-                "yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'",    // 4 цифры с Z
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",     // 3 цифры (миллисекунды) с Z
-                "yyyy-MM-dd'T'HH:mm:ss.SS'Z'",      // 2 цифры с Z
-                "yyyy-MM-dd'T'HH:mm:ss.S'Z'",       // 1 цифра с Z
-                "yyyy-MM-dd'T'HH:mm:ss'Z'"          // без дробных секунд с Z
-            ]
-            
-            for format in formatsWithZ {
-                let formatter = DateFormatter()
-                formatter.dateFormat = format
-                formatter.locale = Locale(identifier: "en_US_POSIX")
-                formatter.timeZone = TimeZone(secondsFromGMT: 0) // UTC
-                
-                if let date = formatter.date(from: dateString) {
-                    return date.rounded(precision)
-                }
-            }
-            
-            // Пробуем разные форматы без timezone с разным количеством дробных секунд
+            // Пробуем разные форматы без timezone с разным количеством дробных секунд (сначала, так как API может возвращать без timezone)
             let formats = [
                 "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",  // 6 цифр (микросекунды)
                 "yyyy-MM-dd'T'HH:mm:ss.SSSSS",   // 5 цифр
@@ -102,6 +80,45 @@ public extension JSONDecoder {
             ]
             
             for format in formats {
+                let formatter = DateFormatter()
+                formatter.dateFormat = format
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                formatter.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+                
+                if let date = formatter.date(from: dateString) {
+                    return date.rounded(precision)
+                }
+            }
+            
+            // Если строка не содержит timezone, пробуем добавить 'Z' (UTC) и парсить через ISO8601DateFormatter
+            // Проверяем, есть ли timezone (символы +, - или Z в конце)
+            let hasTimezone = dateString.contains("+") || dateString.hasSuffix("Z")
+            let hasTimezoneOffset: Bool = {
+                if let tIndex = dateString.range(of: "T")?.upperBound {
+                    let afterT = String(dateString[tIndex...])
+                    return afterT.contains("+") || (afterT.contains("-") && afterT.count > 10) // - может быть частью даты
+                }
+                return false
+            }()
+            
+            if !hasTimezone && !hasTimezoneOffset {
+                if let date = DateFormatter.iso8601.date(from: dateString + "Z") {
+                    return date.rounded(precision)
+                }
+            }
+            
+            // Пробуем разные форматы с 'Z' в конце и разным количеством дробных секунд
+            let formatsWithZ = [
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",  // 6 цифр (микросекунды) с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSS'Z'",   // 5 цифр с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'",    // 4 цифры с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",     // 3 цифры (миллисекунды) с Z
+                "yyyy-MM-dd'T'HH:mm:ss.SS'Z'",      // 2 цифры с Z
+                "yyyy-MM-dd'T'HH:mm:ss.S'Z'",       // 1 цифра с Z
+                "yyyy-MM-dd'T'HH:mm:ss'Z'"           // без дробных секунд с Z
+            ]
+            
+            for format in formatsWithZ {
                 let formatter = DateFormatter()
                 formatter.dateFormat = format
                 formatter.locale = Locale(identifier: "en_US_POSIX")
