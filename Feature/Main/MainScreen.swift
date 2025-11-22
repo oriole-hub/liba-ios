@@ -25,7 +25,7 @@ struct MainScreen: View {
                     ProgressView()
                 } else {
                     ScrollView {
-                        VStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 16) {
                             Button(action: {
                                 let barcode = UserDefaults.group.userBarcode ?? ""
                                 let fullName = UserDefaults.group.userFullName ?? ""
@@ -37,13 +37,24 @@ struct MainScreen: View {
                                 ReaderTicketView(bottomRightText: state.userFullName)
                             }
                             .buttonStyle(PlainButtonStyle())
-                            
+                            Text("Рекомендации")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.primary)
+                            ScrollView(.horizontal) {
+                                LazyHStack(alignment: .center, spacing: 16) {
+                                    ForEach(1..<5, id: \.self) { value in
+                                        BookGridCell(imageURL: value.description, bookName: value.description)
+                                    }
+                                }
+                            }
+                            Text("Каталог")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.primary)
                             LazyVGrid(columns: columns, spacing: 8) {
                                 ForEach(Array(state.books.enumerated()), id: \.element.id) { index, book in
                                     Button(action: {
                                         // Подсчитываем доступные экземпляры (статус "available")
                                         let availableCount = book.instances.filter { $0.status.lowercased() == "available" }.count
-                                        
                                         state.destination = .book(BookState(
                                             bookName: book.title,
                                             imageURLs: book.urlPic != nil ? [book.urlPic] : [],
@@ -73,7 +84,8 @@ struct MainScreen: View {
                                     .padding()
                             }
                         }
-                        .padding(16)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 16)
                     }
                     .refreshable {
                         await state.loadBooks()

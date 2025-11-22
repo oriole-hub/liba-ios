@@ -47,7 +47,7 @@ struct BookGridCell: View {
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(width: 175, height: 247)
+        .frame(width: 175, height: 278)
     }
 }
 
