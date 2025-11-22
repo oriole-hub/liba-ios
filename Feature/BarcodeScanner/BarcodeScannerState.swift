@@ -7,33 +7,106 @@
 
 import Foundation
 import SwiftNavigation
+import Dependencies
 
 final class BarcodeScannerState: ObservableObject {
     
     // MARK: Properties
+    
+    @Dependency(\.bookService) private var bookService
     
     lazy var screen = BarcodeScannerScreen(state: self)
     
     @Published var scannedISBN: String?
     @Published var isScanning: Bool = false
     @Published var errorMessage: String?
+    @Published var isLoading: Bool = false
     
-    var onScanned: ((String) -> Void)?
+    private var debounceTask: Task<Void, Never>?
+    
+    // MARK: Navigation
+    
+    @CasePathable
+    enum Destination: Equatable {
+        case book(BookState)
+        
+        static func == (lhs: Destination, rhs: Destination) -> Bool {
+            switch (lhs, rhs) {
+            case (.book(let lhsBook), .book(let rhsBook)):
+                return lhsBook.id == rhsBook.id
+            }
+        }
+    }
+    
+    @Published var destination: Destination?
     
     // MARK: Init
     
-    init(onScanned: ((String) -> Void)? = nil) {
-        self.onScanned = onScanned
+    var onBookFound: ((BookState) -> Void)?
+    
+    init(onBookFound: ((BookState) -> Void)? = nil) {
+        self.onBookFound = onBookFound
     }
     
     // MARK: Actions
     
-    func handleScannedBarcode(_ barcode: String) {
+    @MainActor
+    func handleScannedBarcode(_ barcode: String) async {
+        // Отменяем предыдущий запрос если есть
+        debounceTask?.cancel()
+        
         let isbn = extractISBN(from: barcode)
         scannedISBN = isbn
-        if let isbn = isbn {
-            onScanned?(isbn)
+        
+        guard let isbn = isbn else { return }
+        
+        // Создаем новую задачу с debounce
+        debounceTask = Task {
+            // Ждем 500ms перед отправкой запроса (debounce)
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 секунды
+            
+            // Проверяем, не была ли задача отменена
+            guard !Task.isCancelled else { return }
+            
+            await performBookRequest(isbn: isbn)
         }
+    }
+    
+    @MainActor
+    private func performBookRequest(isbn: String) async {
+        isLoading = true
+        
+        do {
+            let bookResponse = try await bookService.getBookByISBN(isbn: isbn)
+            
+            // Подсчитываем доступные экземпляры (статус "available")
+            let availableCount = bookResponse.instances.filter { $0.status.lowercased() == "available" }.count
+            
+            // Создаем BookState с данными из ответа
+            let bookState = BookState(
+                bookName: bookResponse.title,
+                imageURLs: bookResponse.urlPic != nil ? [bookResponse.urlPic] : [],
+                description: bookResponse.description ?? "",
+                genre: bookResponse.genre,
+                isbn: bookResponse.isbn,
+                availableInstancesCount: availableCount
+            )
+            
+            // Если есть callback, вызываем его (для случая fullScreenCover)
+            if let onBookFound = onBookFound {
+                onBookFound(bookState)
+            } else {
+                // Иначе устанавливаем destination для навигации внутри NavigationStack
+                destination = .book(bookState)
+            }
+            
+        } catch {
+            // При ошибке ничего не делаем (тихо игнорируем)
+            // Можно опционально логировать ошибку для отладки
+            print("Ошибка при получении книги по ISBN: \(error.localizedDescription)")
+        }
+        
+        isLoading = false
     }
     
     // MARK: Private methods

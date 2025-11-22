@@ -16,7 +16,18 @@ final class MainState: ObservableObject {
     @Dependency(\.bookService) private var bookService
     @Dependency(\.userService) private var userService
     
-    @Published var searchText: String = ""
+    @Published var searchText: String = "" {
+        didSet {
+            // Debounce поиска - отменяем предыдущую задачу и создаем новую
+            searchTask?.cancel()
+            searchTask = Task {
+                // Ждем 500ms перед выполнением поиска
+                try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 секунды
+                guard !Task.isCancelled else { return }
+                await performSearch()
+            }
+        }
+    }
     @Published var books: [Book.Responses.BookDetailResponse] = []
     @Published var isLoading: Bool = false
     @Published var isLoadingMore: Bool = false
@@ -26,6 +37,7 @@ final class MainState: ObservableObject {
     private var currentSkip: Int = 0
     private let limit: Int = 20
     @Published var hasMoreBooks: Bool = true
+    private var searchTask: Task<Void, Never>?
     
     // MARK: Navigation
     
@@ -61,7 +73,20 @@ final class MainState: ObservableObject {
         currentSkip = 0
         
         do {
-            let loadedBooks = try await bookService.getAllBooks(skip: 0, limit: limit)
+            let loadedBooks: [Book.Responses.BookDetailResponse]
+            
+            // Если есть поисковый запрос, используем поиск, иначе загружаем все книги
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                let searchParameters = Book.Parameters.BookSearchRequest(query: searchText)
+                loadedBooks = try await bookService.searchBooks(
+                    parameters: searchParameters,
+                    skip: 0,
+                    limit: limit
+                )
+            } else {
+                loadedBooks = try await bookService.getAllBooks(skip: 0, limit: limit)
+            }
+            
             books = loadedBooks
             currentSkip = loadedBooks.count
             hasMoreBooks = loadedBooks.count == limit
@@ -79,7 +104,20 @@ final class MainState: ObservableObject {
         isLoadingMore = true
         
         do {
-            let loadedBooks = try await bookService.getAllBooks(skip: currentSkip, limit: limit)
+            let loadedBooks: [Book.Responses.BookDetailResponse]
+            
+            // Если есть поисковый запрос, используем поиск, иначе загружаем все книги
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                let searchParameters = Book.Parameters.BookSearchRequest(query: searchText)
+                loadedBooks = try await bookService.searchBooks(
+                    parameters: searchParameters,
+                    skip: currentSkip,
+                    limit: limit
+                )
+            } else {
+                loadedBooks = try await bookService.getAllBooks(skip: currentSkip, limit: limit)
+            }
+            
             books.append(contentsOf: loadedBooks)
             currentSkip += loadedBooks.count
             hasMoreBooks = loadedBooks.count == limit
@@ -88,6 +126,17 @@ final class MainState: ObservableObject {
         }
         
         isLoadingMore = false
+    }
+    
+    @MainActor
+    private func performSearch() async {
+        // Выполняем поиск только если текст не пустой
+        if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            await loadBooks()
+        } else {
+            // Если поиск очищен, загружаем все книги
+            await loadBooks()
+        }
     }
     
     @MainActor

@@ -33,6 +33,11 @@ public extension Book.Parameters {
         public let inventoryNumber: String
         public let storageLocation: String
     }
+    
+    @MemberwiseInit(.public)
+    struct BookSearchRequest: Codable {
+        public let query: String
+    }
 }
 
 // MARK: - Responses

@@ -37,6 +37,7 @@ public extension PWNetworkTarget {
         case getAllBooks(skip: Int?, limit: Int?)
         case getBookByISBN(isbn: String)
         case addBookInstance(bookId: UUID, parameters: Book.Parameters.BookInstanceCreate)
+        case searchBooks(parameters: Book.Parameters.BookSearchRequest, skip: Int?, limit: Int?)
         
         // MARK: Target
         
@@ -50,6 +51,7 @@ public extension PWNetworkTarget {
             case .getAllBooks: "/books"
             case .getBookByISBN(let isbn): "/books/isbn/\(isbn)"
             case .addBookInstance(let bookId, _): "/books/\(bookId.uuidString)/instances"
+            case .searchBooks: "/books/search"
             }
         }
         
@@ -59,6 +61,7 @@ public extension PWNetworkTarget {
             case .getAllBooks: .get
             case .getBookByISBN: .get
             case .addBookInstance: .post
+            case .searchBooks: .post
             }
         }
         
@@ -94,6 +97,32 @@ public extension PWNetworkTarget {
                 } catch {
                     return .requestData(Data())
                 }
+            case .searchBooks(let parameters, let skip, let limit):
+                var queryParameters: [String: Any] = [:]
+                if let skip = skip {
+                    queryParameters["skip"] = skip
+                }
+                if let limit = limit {
+                    queryParameters["limit"] = limit
+                }
+                do {
+                    let bodyData = try parameters.encoded(using: encoder)
+                    let bodyDict = try JSONSerialization.jsonObject(with: bodyData) as? [String: Any] ?? [:]
+                    if queryParameters.isEmpty {
+                        return .requestData(bodyData)
+                    } else {
+                        return .requestCompositeParameters(
+                            bodyParameters: bodyDict,
+                            bodyEncoding: JSONEncoding.default,
+                            urlParameters: queryParameters
+                        )
+                    }
+                } catch {
+                    return .requestParameters(
+                        parameters: queryParameters,
+                        encoding: URLEncoding.queryString
+                    )
+                }
             }
         }
         
@@ -103,6 +132,7 @@ public extension PWNetworkTarget {
             case .getAllBooks: false
             case .getBookByISBN: false
             case .addBookInstance: true
+            case .searchBooks: true
             }
         }
     }
@@ -156,6 +186,15 @@ public final class BookServiceImpl: BookServiceProtocol {
         let response = try await requestService
             .asyncRequest(.addBookInstance(bookId: bookId, parameters: parameters))
             .map(Book.Responses.BookInstanceResponse.self, using: decoder)
+        
+        return response
+    }
+    
+    public func searchBooks(parameters: Book.Parameters.BookSearchRequest, skip: Int?, limit: Int?) async throws -> [Book.Responses.BookDetailResponse] {
+        let decoder = JSONDecoder.with(.roundedDate(.millisecondsAndSeconds), .snakeCase)
+        let response = try await requestService
+            .asyncRequest(.searchBooks(parameters: parameters, skip: skip, limit: limit))
+            .map([Book.Responses.BookDetailResponse].self, using: decoder)
         
         return response
     }

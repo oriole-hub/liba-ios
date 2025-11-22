@@ -62,9 +62,19 @@ struct BarcodeScannerScreen: View {
                 // Если настройка не завершилась, все равно пытаемся запустить
                 if cameraManager.cameraPermissionStatus == .authorized {
                     cameraManager.startScanning { barcode in
-                        state.handleScannedBarcode(barcode)
-                        dismiss()
+                        Task { @MainActor in
+                            await state.handleScannedBarcode(barcode)
+                        }
                     }
+                }
+            }
+            .navigationDestination(item: $state.destination.book) { bookState in
+                bookState.screen
+            }
+            .onChange(of: state.destination) { newDestination in
+                // Если книга найдена через destination, закрываем экран сканера
+                if newDestination != nil {
+                    dismiss()
                 }
             }
             .onDisappear {

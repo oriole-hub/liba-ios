@@ -100,8 +100,9 @@ struct MainScreen: View {
             }
             .fullScreenCover(isPresented: $state.showBarcodeScanner) {
                 BarcodeScannerScreen(
-                    state: BarcodeScannerState { scannedISBN in
-                        state.searchText = scannedISBN
+                    state: BarcodeScannerState { bookState in
+                        // Открываем страницу книги и закрываем сканер
+                        state.destination = .book(bookState)
                         state.showBarcodeScanner = false
                     }
                 )
