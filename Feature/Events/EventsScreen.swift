@@ -68,32 +68,102 @@ struct EventsScreen: View {
     
     @ViewBuilder
     private var filtersSection: some View {
-        VStack(spacing: 12) {
+        HStack(spacing: 12) {
             // Фильтр по статусу
-            Picker("Статус", selection: $state.selectedStatusFilter) {
+            Menu {
                 ForEach(EventsState.StatusFilter.allCases, id: \.self) { filter in
-                    Text(filter.rawValue).tag(filter)
+                    Button {
+                        state.selectedStatusFilter = filter
+                    } label: {
+                        HStack {
+                            Text(filter.rawValue)
+                            if state.selectedStatusFilter == filter {
+                                Spacer()
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
                 }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .font(.system(size: 14))
+                    Text(state.selectedStatusFilter.rawValue)
+                        .font(.system(size: 14))
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10))
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
             }
-            .pickerStyle(.segmented)
             
             // Фильтр по дате
-            Picker("Дата", selection: $state.selectedDateFilter) {
+            Menu {
                 ForEach(EventsState.DateFilter.allCases, id: \.self) { filter in
-                    Text(filter.rawValue).tag(filter)
+                    Button {
+                        state.selectedDateFilter = filter
+                    } label: {
+                        HStack {
+                            Text(filter.rawValue)
+                            if state.selectedDateFilter == filter {
+                                Spacer()
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
                 }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 14))
+                    Text(state.selectedDateFilter.rawValue)
+                        .font(.system(size: 14))
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10))
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
             }
-            .pickerStyle(.segmented)
             
             // Фильтр по регистрации
-            Picker("Регистрация", selection: $state.selectedRegistrationFilter) {
+            Menu {
                 ForEach(EventsState.RegistrationFilter.allCases, id: \.self) { filter in
-                    Text(filter.rawValue).tag(filter)
+                    Button {
+                        state.selectedRegistrationFilter = filter
+                    } label: {
+                        HStack {
+                            Text(filter.rawValue)
+                            if state.selectedRegistrationFilter == filter {
+                                Spacer()
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
                 }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "person.badge.plus")
+                        .font(.system(size: 14))
+                    Text(state.selectedRegistrationFilter.rawValue)
+                        .font(.system(size: 14))
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10))
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
             }
-            .pickerStyle(.segmented)
+            
+            Spacer()
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.bottom)
+        .padding(.top, 4)
     }
     
     @ViewBuilder

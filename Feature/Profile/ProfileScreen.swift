@@ -64,8 +64,6 @@ struct ProfileScreen: View {
                 }
                 .disabled(state.isLoading)
                 .padding(.horizontal)
-                
-                Spacer()
             }
             .navigationTitle("Профиль")
             .navigationBarTitleDisplayMode(.inline)
