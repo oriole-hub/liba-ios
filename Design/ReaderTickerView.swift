@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ColorfulX
 
 // MARK: - View
 
@@ -25,7 +26,7 @@ public struct ReaderTicketView: View {
     
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.accentColor
+            ColorfulView(color: .aurora, speed: .constant(1.25))
                 .cornerRadius(14)
             VStack {
                 HStack {
@@ -35,7 +36,6 @@ public struct ReaderTicketView: View {
                         .multilineTextAlignment(.leading)
                         .lineLimit(nil)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
                     Spacer()
                 }
                 Spacer()

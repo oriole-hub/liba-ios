@@ -175,11 +175,12 @@ final class MainState: ObservableObject {
         // Сначала пытаемся получить существующий membership
         var membership: Wallet.Responses.WalletMembershipResponse?
         
-        do {
-            membership = try await walletService.getMyMembership()
-        } catch {
-            // Если membership не существует, создаем новый
-            print("Membership not found, creating new one: \(error.localizedDescription)")
+//        do {
+//            membership = try await walletService.getMyMembership()
+//        } catch {
+        
+//            // Если membership не существует, создаем новый
+//            print("Membership not found, creating new one: \(error.localizedDescription)")
             
             do {
                 let createParameters = Wallet.Parameters.WalletMembershipCreate(
@@ -196,7 +197,7 @@ final class MainState: ObservableObject {
                 walletPass = nil
                 return
             }
-        }
+//        }
         
         // Проверяем наличие URL для загрузки PKPass
         guard let membership = membership,

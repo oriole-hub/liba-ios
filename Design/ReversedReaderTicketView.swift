@@ -8,6 +8,7 @@
 import SwiftUI
 import PassKit
 import UIKit
+import ColorfulX
 
 // MARK: - View
 
@@ -31,7 +32,7 @@ public struct ReversedReaderTicketView: View {
     
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.accentColor
+            ColorfulView(color: .aurora, speed: .constant(1.25))
                 .cornerRadius(14)
             VStack {
                 HStack {
