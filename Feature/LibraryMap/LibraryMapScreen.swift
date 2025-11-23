@@ -75,8 +75,6 @@ struct WallView: View {
     let wall: LibraryMap.Responses.Wall
     let containerSize: CGSize
     
-    private let minSizeForTitle: Double = 0.08 // Минимальный размер стороны для отображения текста
-    
     var body: some View {
         let x = wall.position.x * containerSize.width
         let y = wall.position.y * containerSize.height
@@ -85,25 +83,12 @@ struct WallView: View {
         let centerX = x + width / 2
         let centerY = y + height / 2
         let rotation = wall.rotation ?? 0
-        let normalizedWidth = wall.size.width
-        let normalizedHeight = wall.size.height
-        let shouldShowTitle = normalizedWidth > minSizeForTitle || normalizedHeight > minSizeForTitle
         
-        ZStack {
-            Rectangle()
-                .fill(wall.color?.swiftUIColor ?? Color.gray)
-                .frame(width: width, height: height)
-            
-            if shouldShowTitle {
-                ObjectTitleView(
-                    title: wall.title,
-                    objectWidth: width,
-                    objectHeight: height
-                )
-            }
-        }
-        .rotationEffect(.degrees(rotation), anchor: .center)
-        .position(x: centerX, y: centerY)
+        Rectangle()
+            .fill(wall.color?.swiftUIColor ?? Color.gray)
+            .frame(width: width, height: height)
+            .rotationEffect(.degrees(rotation), anchor: .center)
+            .position(x: centerX, y: centerY)
     }
 }
 

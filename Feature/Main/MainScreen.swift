@@ -166,7 +166,7 @@ struct MainScreen: View {
                 }
             }
             .navigationTitle("Главная")
-            .searchable(text: $state.searchText)
+            .searchable(text: $state.searchText, prompt: "Поиск по каталогу")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {

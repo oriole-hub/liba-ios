@@ -76,8 +76,6 @@ struct LoanCreationScreen: View {
                         Text("Дата возврата")
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.primary)
-                            .padding(.horizontal, 16)
-                        
                         DatePicker(
                             "",
                             selection: $state.selectedDate,
@@ -85,8 +83,8 @@ struct LoanCreationScreen: View {
                             displayedComponents: .date
                         )
                         .datePickerStyle(.graphical)
-                        .padding(.horizontal, 16)
                     }
+                    .padding(.horizontal, 16)
                     
                     // Reserve button
                     Button(action: {
@@ -99,7 +97,7 @@ struct LoanCreationScreen: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
-                            .background(state.isLoading ? Color.gray : Color.blue)
+                            .background(state.isLoading ? Color.gray : Color.accentColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     .disabled(state.isLoading || state.book == nil)

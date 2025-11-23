@@ -23,8 +23,10 @@ struct EventDetailScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                titleSection
-                descriptionSection
+                VStack(alignment: .leading, spacing: 10) {
+                    titleSection
+                    descriptionSection
+                }
                 dateSection
                 locationSection
                 availabilitySection
@@ -79,14 +81,14 @@ struct EventDetailScreen: View {
     @ViewBuilder
     private var descriptionSection: some View {
         if let description = state.event.description, !description.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Описание")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.primary)
+//            VStack(alignment: .leading, spacing: 8) {
+//                Text("Описание")
+//                    .font(.system(size: 18, weight: .semibold))
+//                    .foregroundColor(.primary)
                 Text(description)
                     .font(.system(size: 16))
                     .foregroundColor(.secondary)
-            }
+//            }
         }
     }
     
@@ -180,7 +182,7 @@ struct EventDetailScreen: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(state.isRegistered ? Color.red : Color.blue)
+            .background(state.isRegistered ? Color.red : Color.accentColor)
             .cornerRadius(12)
         }
         .disabled(state.isLoading)

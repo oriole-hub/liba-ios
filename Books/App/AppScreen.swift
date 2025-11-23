@@ -43,7 +43,7 @@ struct AppScreen: View {
                 state.loansState.screen
             }
             
-            Tab("События", systemImage: state.tabSelection == .events ? "calendar.fill" : "calendar", value: AppState.TabSelection.events) {
+            Tab("События", systemImage: state.tabSelection == .events ? "calendar" : "calendar", value: AppState.TabSelection.events) {
                 state.eventsState.screen
             }
             

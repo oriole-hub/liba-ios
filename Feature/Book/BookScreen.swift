@@ -148,7 +148,7 @@ struct BookScreen: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(state.availableInstancesCount > 0 ? Color.blue : Color.gray)
+                    .background(state.availableInstancesCount > 0 ? Color.accentColor : Color.gray)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .disabled(state.availableInstancesCount == 0)
