@@ -24,8 +24,8 @@ struct MainScreen: View {
     @State private var stickyHeader: String? = nil
     
     private let columns = [
-        GridItem(.flexible(), spacing: 8),
-        GridItem(.flexible(), spacing: 8)
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
     ]
     
     private var cardBarcode: String {
@@ -102,10 +102,7 @@ struct MainScreen: View {
                                         }
                                     }
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
                             }
-                            .frame(height: 310)
                             
                             // Заголовок "Каталог" с отслеживанием позиции
                             SectionHeaderView(title: "Каталог", id: "catalog")

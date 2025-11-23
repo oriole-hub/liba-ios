@@ -44,8 +44,8 @@ struct BookGridCell: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(.primary)
                 .lineLimit(1)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
         .frame(width: 175, height: 278)
     }
