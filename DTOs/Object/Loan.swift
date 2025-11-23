@@ -24,6 +24,11 @@ public extension Loan.Parameters {
         public let bookInstanceId: UUID
         public let dueDate: Date
     }
+    
+    @MemberwiseInit(.public, _optionalsDefaultNil: true)
+    struct LoanExtendRequest: Codable {
+        public let dueDate: Date
+    }
 }
 
 // MARK: - Responses

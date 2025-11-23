@@ -36,6 +36,7 @@ public extension PWNetworkTarget {
         case reserveBook(parameters: Loan.Parameters.LoanReserveRequest)
         case issueLoan(loanId: UUID)
         case returnLoan(loanId: UUID)
+        case extendLoan(loanId: UUID, parameters: Loan.Parameters.LoanExtendRequest)
         case getMyLoans(includeReturned: Bool?)
         case getAllLoans
         
@@ -50,6 +51,7 @@ public extension PWNetworkTarget {
             case .reserveBook: "/loans/reserve"
             case .issueLoan(let loanId): "/loans/\(loanId.uuidString)/issue"
             case .returnLoan(let loanId): "/loans/\(loanId.uuidString)/return"
+            case .extendLoan(let loanId, _): "/loans/\(loanId.uuidString)/extend"
             case .getMyLoans: "/loans/my"
             case .getAllLoans: "/loans/all"
             }
@@ -60,6 +62,7 @@ public extension PWNetworkTarget {
             case .reserveBook: .post
             case .issueLoan: .post
             case .returnLoan: .post
+            case .extendLoan: .post
             case .getMyLoans: .get
             case .getAllLoans: .get
             }
@@ -80,6 +83,13 @@ public extension PWNetworkTarget {
                 return .requestPlain
             case .returnLoan:
                 return .requestPlain
+            case .extendLoan(_, let parameters):
+                do {
+                    let data = try parameters.encoded(using: encoder)
+                    return .requestData(data)
+                } catch {
+                    return .requestData(Data())
+                }
             case .getMyLoans(let includeReturned):
                 var parameters: [String: Any] = [:]
                 if let includeReturned = includeReturned {
@@ -99,6 +109,7 @@ public extension PWNetworkTarget {
             case .reserveBook: true
             case .issueLoan: true
             case .returnLoan: true
+            case .extendLoan: true
             case .getMyLoans: true
             case .getAllLoans: true
             }
@@ -144,6 +155,15 @@ public final class LoanServiceImpl: LoanServiceProtocol {
         let decoder = JSONDecoder.with(.roundedDate(.millisecondsAndSeconds), .snakeCase)
         let response = try await requestService
             .asyncRequest(.returnLoan(loanId: loanId))
+            .map(Loan.Responses.LoanDetailResponse.self, using: decoder)
+        
+        return response
+    }
+    
+    public func extendLoan(loanId: UUID, parameters: Loan.Parameters.LoanExtendRequest) async throws -> Loan.Responses.LoanDetailResponse {
+        let decoder = JSONDecoder.with(.roundedDate(.millisecondsAndSeconds), .snakeCase)
+        let response = try await requestService
+            .asyncRequest(.extendLoan(loanId: loanId, parameters: parameters))
             .map(Loan.Responses.LoanDetailResponse.self, using: decoder)
         
         return response

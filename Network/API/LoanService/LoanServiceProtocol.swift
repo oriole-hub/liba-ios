@@ -17,6 +17,8 @@ public protocol LoanServiceProtocol {
     
     func returnLoan(loanId: UUID) async throws -> Loan.Responses.LoanDetailResponse
     
+    func extendLoan(loanId: UUID, parameters: Loan.Parameters.LoanExtendRequest) async throws -> Loan.Responses.LoanDetailResponse
+    
     func getMyLoans(includeReturned: Bool?) async throws -> [Loan.Responses.LoanDetailResponse]
     
     func getAllLoans() async throws -> [Loan.Responses.LoanDetailResponse]
