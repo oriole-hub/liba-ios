@@ -148,13 +148,6 @@ struct MainScreen: View {
                         Image(systemName: "barcode.viewfinder")
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        state.destination = .profile(ProfileState())
-                    }) {
-                        Image(systemName: "person.fill")
-                    }
-                }
             }
             .safeAreaInset(edge: .top, spacing: 0) {
                 if let stickyHeader = stickyHeader {
@@ -183,9 +176,6 @@ struct MainScreen: View {
             }
             .navigationDestination(item: $state.destination.book) { bookState in
                 bookState.screen
-            }
-            .navigationDestination(item: $state.destination.profile) { profileState in
-                profileState.screen
             }
             .onAppear {
                 Task {

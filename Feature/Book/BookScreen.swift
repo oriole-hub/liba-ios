@@ -132,7 +132,7 @@ struct BookScreen: View {
             Button(action: {
                 state.destination = .loanCreation(LoanCreationState(isbn: state.isbn))
             }) {
-                Text("взять на прочтение")
+                Text("Взять на прочтение")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

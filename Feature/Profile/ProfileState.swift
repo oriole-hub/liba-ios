@@ -20,6 +20,15 @@ final class ProfileState: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
+    // MARK: Navigation
+    
+    @CasePathable
+    enum Destination {
+        case libraryMap(LibraryMapState)
+    }
+    
+    @Published var destination: Destination?
+    
     // MARK: Init
     
     init() {}

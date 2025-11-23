@@ -49,7 +49,6 @@ final class MainState: ObservableObject {
     @CasePathable
     enum Destination {
         case book(BookState)
-        case profile(ProfileState)
     }
     
     @Published var destination: Destination?

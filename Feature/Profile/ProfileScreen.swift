@@ -15,6 +15,28 @@ struct ProfileScreen: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
+                // Карта библиотеки
+                Button(action: {
+                    state.destination = .libraryMap(LibraryMapState())
+                }) {
+                    HStack {
+                        Image(systemName: "map.fill")
+                            .foregroundColor(.blue)
+                            .frame(width: 24)
+                        Text("Карта библиотеки")
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.secondary)
+                            .font(.caption)
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                }
+                .padding(.horizontal)
+                .padding(.top)
+                
                 Spacer()
                 
                 // Error message
@@ -47,6 +69,9 @@ struct ProfileScreen: View {
             }
             .navigationTitle("Профиль")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(item: $state.destination.libraryMap) { libraryMapState in
+                libraryMapState.screen
+            }
         }
     }
 }

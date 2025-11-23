@@ -39,16 +39,16 @@ struct AppScreen: View {
                 state.mainState.screen
             }
             
-            Tab("Карта", systemImage: state.tabSelection == .libraryMap ? "map.fill" : "map", value: AppState.TabSelection.libraryMap) {
-                state.libraryMapState.screen
-            }
-            
             Tab("Мои книги", systemImage: state.tabSelection == .loans ? "book.fill" : "book", value: AppState.TabSelection.loans) {
                 state.loansState.screen
             }
             
             Tab("События", systemImage: state.tabSelection == .events ? "calendar.fill" : "calendar", value: AppState.TabSelection.events) {
                 state.eventsState.screen
+            }
+            
+            Tab("Профиль", systemImage: state.tabSelection == .profile ? "person.fill" : "person", value: AppState.TabSelection.profile) {
+                state.profileState.screen
             }
         }
     }
@@ -61,10 +61,10 @@ struct AppScreen: View {
                     Label("Главная", systemImage: state.tabSelection == .main ? "house.fill" : "house")
                 }
             
-            state.libraryMapState.screen
-                .tag(AppState.TabSelection.libraryMap)
+            state.eventsState.screen
+                .tag(AppState.TabSelection.events)
                 .tabItem {
-                    Label("Карта", systemImage: state.tabSelection == .libraryMap ? "map.fill" : "map")
+                    Label("События", systemImage: state.tabSelection == .events ? "calendar" : "calendar")
                 }
             
             state.loansState.screen
@@ -73,10 +73,10 @@ struct AppScreen: View {
                     Label("Мои книги", systemImage: state.tabSelection == .loans ? "book.fill" : "book")
                 }
             
-            state.eventsState.screen
-                .tag(AppState.TabSelection.events)
+            state.profileState.screen
+                .tag(AppState.TabSelection.profile)
                 .tabItem {
-                    Label("События", systemImage: state.tabSelection == .events ? "calendar.fill" : "calendar")
+                    Label("Профиль", systemImage: state.tabSelection == .profile ? "person.fill" : "person")
                 }
         }
     }
