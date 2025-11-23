@@ -72,13 +72,40 @@ struct MainScreen: View {
                                     }
                                 )
                             
-                            ScrollView(.horizontal) {
-                                LazyHStack(alignment: .center, spacing: 16) {
-                                    ForEach(1..<5, id: \.self) { value in
-                                        BookGridCell(imageURL: value.description, bookName: value.description)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(alignment: .top, spacing: 16) {
+                                    if state.isLoadingRecommendations && state.recommendations.isEmpty {
+                                        ProgressView()
+                                            .padding()
+                                    } else if state.recommendations.isEmpty {
+                                        Text("Рекомендации отсутствуют")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.secondary)
+                                            .padding()
+                                    } else {
+                                        ForEach(state.recommendations, id: \.id) { recommendation in
+                                            Button(action: {
+                                                // Подсчитываем доступные экземпляры (статус "available")
+                                                let availableCount = recommendation.instances.filter { $0.status.lowercased() == "available" }.count
+                                                state.destination = .book(BookState(
+                                                    bookName: recommendation.title,
+                                                    imageURLs: recommendation.urlPic != nil ? [recommendation.urlPic] : [],
+                                                    description: recommendation.description ?? "Описание книги отсутствует.",
+                                                    genre: recommendation.genre,
+                                                    isbn: recommendation.isbn,
+                                                    availableInstancesCount: availableCount
+                                                ))
+                                            }) {
+                                                BookGridCell(imageURL: recommendation.urlPic, bookName: recommendation.title)
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
                                     }
                                 }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
                             }
+                            .frame(height: 310)
                             
                             // Заголовок "Каталог" с отслеживанием позиции
                             SectionHeaderView(title: "Каталог", id: "catalog")
@@ -133,6 +160,7 @@ struct MainScreen: View {
                         updateStickyHeader(offsets: offsets)
                     }
                     .refreshable {
+                        await state.loadRecommendations()
                         await state.loadBooks()
                     }
                     
@@ -181,6 +209,10 @@ struct MainScreen: View {
                 Task {
                     // Загружаем данные пользователя
                     await state.loadUserData()
+                    // Загружаем рекомендации, если список пуст
+                    if state.recommendations.isEmpty {
+                        await state.loadRecommendations()
+                    }
                     // Загружаем книги, если список пуст
                     if state.books.isEmpty {
                         await state.loadBooks()

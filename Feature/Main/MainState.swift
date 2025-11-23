@@ -18,6 +18,7 @@ final class MainState: ObservableObject {
     @Dependency(\.bookService) private var bookService
     @Dependency(\.userService) private var userService
     @Dependency(\.walletService) private var walletService
+    @Dependency(\.recommendationService) private var recommendationService
     
     @Published var searchText: String = "" {
         didSet {
@@ -32,8 +33,10 @@ final class MainState: ObservableObject {
         }
     }
     @Published var books: [Book.Responses.BookDetailResponse] = []
+    @Published var recommendations: [Book.Responses.BookDetailResponse] = []
     @Published var isLoading: Bool = false
     @Published var isLoadingMore: Bool = false
+    @Published var isLoadingRecommendations: Bool = false
     @Published var errorMessage: String?
     @Published var userFullName: String = "ФАМИЛИЯ И.О."
     @Published var isCardFlipped: Bool = false
@@ -141,6 +144,25 @@ final class MainState: ObservableObject {
             // Если поиск очищен, загружаем все книги
             await loadBooks()
         }
+    }
+    
+    @MainActor
+    func loadRecommendations() async {
+        guard !isLoadingRecommendations else { return }
+        
+        isLoadingRecommendations = true
+        
+        do {
+            let loadedRecommendations = try await recommendationService.getRecommendations(skip: nil, limit: 10)
+            recommendations = loadedRecommendations
+            print("Successfully loaded \(loadedRecommendations.count) recommendations")
+        } catch {
+            // Не показываем ошибку пользователю для рекомендаций, только логируем
+            print("Failed to load recommendations: \(error.localizedDescription)")
+            recommendations = []
+        }
+        
+        isLoadingRecommendations = false
     }
     
     @MainActor
