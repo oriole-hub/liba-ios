@@ -87,6 +87,7 @@ final class BarcodeScannerState: ObservableObject {
             // Создаем BookState с данными из ответа
             let bookState = BookState(
                 bookName: bookResponse.title,
+                author: bookResponse.author,
                 imageURLs: bookResponse.urlPic != nil ? [bookResponse.urlPic] : [],
                 description: bookResponse.description ?? "",
                 genre: bookResponse.genre,

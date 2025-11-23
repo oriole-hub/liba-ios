@@ -89,6 +89,7 @@ struct MainScreen: View {
                                                 let availableCount = recommendation.instances.filter { $0.status.lowercased() == "available" }.count
                                                 state.destination = .book(BookState(
                                                     bookName: recommendation.title,
+                                                    author: recommendation.author,
                                                     imageURLs: recommendation.urlPic != nil ? [recommendation.urlPic] : [],
                                                     description: recommendation.description ?? "Описание книги отсутствует.",
                                                     genre: recommendation.genre,
@@ -122,6 +123,7 @@ struct MainScreen: View {
                                         let availableCount = book.instances.filter { $0.status.lowercased() == "available" }.count
                                         state.destination = .book(BookState(
                                             bookName: book.title,
+                                            author: book.author,
                                             imageURLs: book.urlPic != nil ? [book.urlPic] : [],
                                             description: book.description ?? "Описание книги отсутствует.",
                                             genre: book.genre,

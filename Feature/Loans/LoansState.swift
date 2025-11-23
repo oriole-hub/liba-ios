@@ -125,6 +125,7 @@ final class LoansState: ObservableObject {
                 let availableCount = book.instances.filter { $0.status.lowercased() == "available" }.count
                 let bookState = BookState(
                     bookName: book.title,
+                    author: book.author,
                     imageURLs: book.urlPic != nil ? [book.urlPic] : [],
                     description: book.description ?? "Описание книги отсутствует.",
                     genre: book.genre,

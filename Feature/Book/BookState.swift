@@ -14,6 +14,7 @@ final class BookState: ObservableObject, Identifiable {
     let id = UUID()
     
     @Published var bookName: String
+    @Published var author: String
     @Published var imageURLs: [String?]
     @Published var description: String
     @Published var genre: String?
@@ -33,8 +34,9 @@ final class BookState: ObservableObject, Identifiable {
     
     @Published var destination: Destination?
     
-    init(bookName: String, imageURLs: [String?] = [], description: String = "", genre: String? = nil, isbn: String = "", availableInstancesCount: Int = 0) {
+    init(bookName: String, author: String = "", imageURLs: [String?] = [], description: String = "", genre: String? = nil, isbn: String = "", availableInstancesCount: Int = 0) {
         self.bookName = bookName
+        self.author = author
         self.imageURLs = imageURLs
         self.description = description
         self.genre = genre
@@ -56,6 +58,7 @@ final class BookState: ObservableObject, Identifiable {
             
             // Обновляем свойства
             self.bookName = book.title
+            self.author = book.author
             self.imageURLs = book.urlPic != nil ? [book.urlPic] : []
             self.description = book.description ?? "Описание книги отсутствует."
             self.genre = book.genre

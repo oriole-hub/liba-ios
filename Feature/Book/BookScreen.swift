@@ -57,6 +57,17 @@ struct BookScreen: View {
                             .font(.system(size: 28, weight: .bold))
                             .foregroundColor(.primary)
                         
+                        // Author
+                        if !state.author.isEmpty {
+                            HStack(spacing: 8) {
+                                Image(systemName: "person.fill")
+                                    .foregroundColor(.blue)
+                                Text("Автор: \(state.author)")
+                                    .font(.system(size: 17, weight: .medium))
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                        
                         // Genre
                         if let genre = state.genre, !genre.isEmpty {
                             HStack(spacing: 8) {
